@@ -1,6 +1,6 @@
 import clienteController from "./controller/clienteController.js";
+import servicoController from "./controller/servicoController.js";
 import usuarioController from "./controller/usuarioController.js";
-import orcamentoController from "./controller/orcamentoController.js";
 
 import "dotenv/config";
 import express from "express";
@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use(clienteController);
 app.use(usuarioController);
-app.use(orcamentoController);
+app.use(servicoController);
 
 let port = process.env.PORT;
 app.listen(port, () => console.log("API SUBIU!"));

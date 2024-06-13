@@ -4,7 +4,7 @@ const con = await mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "motodev",
+  database: "barber",
 });
 
 console.log("Conexão com BD realizada");

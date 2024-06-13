@@ -1,14 +1,14 @@
 import con from "./connection.js";
 
 export async function criarUsuario(usuario) {
-  const { nome, cpf, email, senha } = usuario;
+  const { nome, email, senha } = usuario;
 
   const comando = `
-    INSERT INTO usuarios (nome, cpf, email, senha) 
-    VALUES (?, ?, ?, ?)
+    INSERT INTO usuarios (nome, email, senha) 
+    VALUES (?, ?, ?)
   `;
 
-  const resposta = await con.query(comando, [nome, cpf, email, senha]);
+  const resposta = await con.query(comando, [nome, email, senha]);
   const info = resposta[0];
 
   usuario.id = info.insertId;
@@ -35,17 +35,16 @@ export async function deletarUsuario(usuarioId) {
 }
 
 export async function atualizarUsuario(usuarioId, dadosUsuarioAtualizados) {
-  const { nome, cpf, email, senha } = dadosUsuarioAtualizados;
+  const { nome, email, senha } = dadosUsuarioAtualizados;
 
   const comando = `
     UPDATE usuarios
-    SET nome = ?, cpf = ?, email = ?, senha = ?
+    SET nome = ?, email = ?, senha = ?
     WHERE id = ?
   `;
 
   const resposta = await con.query(comando, [
     nome,
-    cpf,
     email,
     senha,
     usuarioId,
@@ -63,12 +62,12 @@ export async function obterUsuarioPorId(usuarioId) {
   return resposta[0][0];
 }
 
-export async function obterUsuarioPorCpf(cpf) {
+export async function obterUsuarioPorEmail(email) {
   const comando = `
     SELECT * FROM usuarios
-    WHERE cpf = ?
+    WHERE email = ?
   `;
 
-  const resposta = await con.query(comando, [cpf]);
+  const resposta = await con.query(comando, [email]);
   return resposta[0][0];
 }

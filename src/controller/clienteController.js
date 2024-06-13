@@ -1,17 +1,15 @@
-import {
-  criarCliente,
-  listarClientes,
-  obterClientePorId,
-  deletarCliente,
-  atualizarCliente,
-} from "../repository/clienteRepository.js";
 import { Router } from "express";
+import { atualizarCliente, criarCliente, deletarClientes, listarClientes, obterClientePorId } from "../repository/clienteRepository.js";
 let router = Router();
 
 router.post("/cliente/cadastrar", async (req, resp) => {
-  let { nome, endereco, cpf, telefone, email } = req.body;
+  let { nome, cpf, telefone } = req.body;
 
-  if (!nome || !endereco || !cpf || !telefone || !email) {
+  console.log(nome)
+  console.log(cpf)
+  console.log(telefone)
+
+  if (!nome || !cpf || !telefone) {
     return resp
       .status(400)
       .send(
@@ -19,27 +17,23 @@ router.post("/cliente/cadastrar", async (req, resp) => {
       );
   }
 
-  let client = await criarCliente({
-    nome,
-    endereco,
-    cpf,
-    telefone,
-    email,
+  let cliente = await criarCliente({
+    nome, cpf, telefone
   });
 
-  return resp.status(201).send(client);
+  return resp.status(201).send(cliente);
 });
 
 router.get("/cliente/listar", async (req, resp) => {
-  let clients = await listarClientes();
-  return resp.status(200).send(clients);
+  let clientes = await listarClientes();
+  return resp.status(200).send(clientes);
 });
 
 router.get("/cliente/:id", async (req, resp) => {
-  let idClient = req.params.id;
-  let client = await obterClientePorId(idClient);
+  let idCliente = req.params.id;
+  let cliente = await obterClientePorId(idCliente);
 
-  if (!client) {
+  if (!cliente) {
     return resp
       .status(400)
       .send(
@@ -47,12 +41,12 @@ router.get("/cliente/:id", async (req, resp) => {
       );
   }
 
-  return resp.status(200).send(client);
+  return resp.status(200).send(cliente);
 });
 
 router.delete("/cliente/:id", async (req, resp) => {
-  let idClient = req.params.id;
-  let deleteStatus = await deletarCliente(idClient);
+  let idCliente = req.params.id;
+  let deleteStatus = await deletarClientes(idCliente);
 
   if (!deleteStatus) {
     return resp
@@ -60,20 +54,14 @@ router.delete("/cliente/:id", async (req, resp) => {
       .send("Solicitação inválida. Verifique o id, e tente novamente");
   }
 
-  return resp.status(200);
+  return resp.status(200).send("Deletado com sucesso!");
 });
 
 router.put("/cliente/:id", async (req, resp) => {
-  let idClient = req.params.id;
-  let dataClient = req.body;
+  let idCliente = req.params.id;
+  let { nome, cpf, telefone } = req.body;
 
-  if (
-    !dataClient.nome ||
-    !dataClient.endereco ||
-    !dataClient.cpf ||
-    !dataClient.telefone ||
-    !dataClient.email
-  ) {
+  if (!nome || !cpf || !telefone) {
     return resp
       .status(400)
       .send(
@@ -81,7 +69,9 @@ router.put("/cliente/:id", async (req, resp) => {
       );
   }
 
-  let updateStatus = await atualizarCliente(dataClient, idClient);
+  let updateStatus = await atualizarCliente({
+    nome, cpf, telefone
+  }, idCliente);
 
   if (!updateStatus) {
     return resp
@@ -89,7 +79,7 @@ router.put("/cliente/:id", async (req, resp) => {
       .send("Solicitação inválida. Verifique o id, e tente novamente");
   }
 
-  return resp.status(200);
+  return resp.status(200).send('Atualizado com Sucesso!');
 });
 
 export default router;

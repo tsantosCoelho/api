@@ -4,16 +4,16 @@ import {
   obterUsuarioPorId,
   deletarUsuario,
   atualizarUsuario,
-  obterUsuarioPorCpf,
+  obterUsuarioPorEmail,
 } from "../repository/usuarioRepository.js";
 
 import { Router } from "express";
 let router = Router();
 
 router.post("/usuario/cadastrar", async (req, resp) => {
-  let { nome, cpf, email, senha } = req.body;
+  let { nome, email, senha } = req.body;
 
-  if (!nome || !cpf || !senha || !email) {
+  if (!nome || !senha || !email) {
     return resp
       .status(400)
       .send(
@@ -23,7 +23,6 @@ router.post("/usuario/cadastrar", async (req, resp) => {
 
   let client = await criarUsuario({
     nome,
-    cpf,
     senha,
     email,
   });
@@ -70,7 +69,6 @@ router.put("/usuario/:id", async (req, resp) => {
 
   if (
     !dataClient.nome ||
-    !dataClient.cpf ||
     !dataClient.senha ||
     !dataClient.email
   ) {
@@ -93,14 +91,14 @@ router.put("/usuario/:id", async (req, resp) => {
 });
 
 router.post("/login", async (req, res) => {
-  const { cpf, senha } = req.body;
+  const { email, senha } = req.body;
 
-  if (!cpf || !senha) {
+  if (!email || !senha) {
     return res.status(400).send("Email e senha são obrigatórios.");
   }
 
   try {
-    const user = await obterUsuarioPorCpf(email);
+    const user = await obterUsuarioPorEmail(email);
 
     if (!user) {
       return res.status(404).send("Usuário não encontrado.");

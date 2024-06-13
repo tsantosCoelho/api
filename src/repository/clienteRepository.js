@@ -1,14 +1,14 @@
 import con from "./connection.js";
 
 export async function criarCliente(cliente) {
-  let { nome, endereco, cpf, telefone, email } = cliente;
+  let { nome, cpf, telefone } = cliente;
 
   let comando = `
-    INSERT INTO clientes (nome, cpf, endereco, telefone, email) 
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO clientes (nome, cpf, telefone) 
+    VALUES (?, ?, ?)
   `;
 
-  let resp = await con.query(comando, [nome, cpf, endereco, telefone, email]);
+  let resp = await con.query(comando, [nome, cpf, telefone]);
   let info = resp[0];
 
   cliente.id = info.insertId;
@@ -24,7 +24,7 @@ export async function listarClientes() {
   return resp[0];
 }
 
-export async function deletarCliente(clienteId) {
+export async function deletarClientes(clienteId) {
   let comando = `
     DELETE FROM clientes
     WHERE id = ?
@@ -34,22 +34,17 @@ export async function deletarCliente(clienteId) {
   return resp[0].affectedRows > 0;
 }
 
-export async function atualizarCliente(clienteId, dadosClienteAtualizados) {
-  const { nome, endereco, cpf, telefone, email } = dadosClienteAtualizados;
+export async function atualizarCliente(dadosCategoriaAtualizados, categoryId) {
+  const { nome, cpf, telefone } = dadosCategoriaAtualizados;
 
   let comando = `
     UPDATE clientes
-    SET nome = ?, endereco = ?, cpf = ?, telefone = ?, email = ?
+    SET nome = ?, cpf = ?, telefone = ?
     WHERE id = ?
   `;
 
   let resp = await con.query(comando, [
-    nome,
-    cpf,
-    endereco,
-    telefone,
-    email,
-    clienteId,
+    nome, cpf, telefone, categoryId
   ]);
   return resp[0].affectedRows > 0;
 }
